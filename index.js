@@ -68,36 +68,23 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
-const generateId = () => {
-  const maxId = persons.length > 0
-    ? Math.max(...persons.map(p => p.id)) + 1
-    :0
-  return Math.floor(Math.random() * (1000 - maxId) + maxId)
-}
-
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
-  if (!body.name | !body.number) {
+  if (body.name === undefined || body.number === undefined) {
     return res.status(400).json({
       error: 'name and/or number missing'
     })
   }
 
-  if (persons.find(p => p.name === body.name)) {
-    return res.status(400).json({
-      error: 'name must be unique'
-    })
-  }
-
-  const person = {
+  const person = new Person({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  }
+  })
 
-  persons = persons.concat(person)
-  res.json(person)
+  person.save().then(savedPerson => {
+    res.json(person)
+  })
 })
 
 const unknownEndpoint = (req, res) => {
