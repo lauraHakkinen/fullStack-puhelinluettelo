@@ -42,7 +42,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(result => {
+    .then(() => {
       res.status(204).end()
     })
     .catch(error => next(error))
@@ -67,7 +67,7 @@ app.put('/api/persons/:id', (req, res, next) => {
   const { name, number } = req.body
 
   Person.findByIdAndUpdate(
-    req.params.id, 
+    req.params.id,
     { name, number },
     { new: true, runValidators: true, context: 'query' }
   )
@@ -78,7 +78,7 @@ app.put('/api/persons/:id', (req, res, next) => {
 })
 
 const unknownEndpoint = (req, res) => {
-  res.status(404).send({error: 'unknown endpoint'})
+  res.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
